@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://w3.org"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2-updated-roles" author="senior-dev" context="dev, test">
+        <!-- 1. Новые кастомные роли с префиксами ROLE_ -->
+        <insert tableName="roles"><column name="name" value="ROLE_USER"/></insert>
+        <insert tableName="roles"><column name="name" value="ROLE_MODERATOR"/></insert>
+        <insert tableName="roles"><column name="name" value="ROLE_SUPER_ADMIN"/></insert>
+
+        <!-- 2. Аккаунты -->
+        <!-- Аккаунт Супер-Админа (Пароль: admin123) -->
+        <insert tableName="accounts">
+            <column name="id" valueNumeric="1"/>
+            <column name="username" value="super_admin"/>
+            <column name="password" value="$2a$12$adOiw9g43ktM5Sl4SKdYUumsDR0v4Oz/MUlVYZCb7jcu8djli4mdS"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+        </insert>
+
+        <!-- Аккаунт Модератора (Пароль: password) -->
+        <insert tableName="accounts">
+            <column name="id" valueNumeric="2"/>
+            <column name="username" value="moderator"/>
+            <column name="password" value="$2a$12$adOiw9g43ktM5Sl4SKdYUumsDR0v4Oz/MUlVYZCb7jcu8djli4mdS"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+        </insert>
+
+        <!-- Заблокированный обычный пользователь (Пароль: password) -->
+        <insert tableName="accounts">
+            <column name="id" valueNumeric="3"/>
+            <column name="username" value="locked_user"/>
+            <column name="password" value="$2a$10$X5uxhIq5m.tO4f84G6Paeu7Wb5X9WJ3NeeK3/pW7V11g3Mug.A6K6"/>
+            <column name="failed_login_attempts" valueNumeric="5"/>
+            <column name="account_non_locked" valueBoolean="false"/>
+        </insert>
+
+        <!-- 3. Связи аккаунтов и новых ролей -->
+        <!-- super_admin получает ROLE_SUPER_ADMIN (role_id = 3) и ROLE_USER (role_id = 1) -->
+        <insert tableName="account_roles"><column name="account_id" valueNumeric="1"/><column name="role_id" valueNumeric="1"/></insert>
+        <insert tableName="account_roles"><column name="account_id" valueNumeric="1"/><column name="role_id" valueNumeric="3"/></insert>
+
+        <!-- moderator получает ROLE_MODERATOR (role_id = 2) -->
+        <insert tableName="account_roles"><column name="account_id" valueNumeric="2"/><column name="role_id" valueNumeric="2"/></insert>
+
+        <!-- locked_user получает ROLE_USER (role_id = 1) -->
+        <insert tableName="account_roles"><column name="account_id" valueNumeric="3"/><column name="role_id" valueNumeric="1"/></insert>
+    </changeSet>
+</databaseChangeLog>
