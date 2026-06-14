@@ -9,6 +9,8 @@ import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 public class SpringDataHometaskApplication {
 
     public static void main(String[] args) {
+        System.setProperty("liquibase.secureParsing", "false");
+        System.setProperty("liquibase.validateXmlChangelogFiles", "false");
         SpringApplication.run(SpringDataHometaskApplication.class, args);
     }
 

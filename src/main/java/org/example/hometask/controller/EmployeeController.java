@@ -6,6 +6,7 @@ import org.example.hometask.repository.EmployeeProjection;
 import org.example.hometask.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.update(id, employee));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable UUID id) {
         employeeService.delete(id);
